@@ -4,7 +4,7 @@
 @inject TmdbApiService TmdbApiService
 @inject NavigationManager NavigationManager
 
-<h1>Movie Portal</h1>
+<h1 class="mb-4">Movie Portal</h1>
 
 <SearchBar OnSearch="HandleSearch" />
 
@@ -14,7 +14,14 @@
 }
 else if (Movies.Any())
 {
-    <MovieList Movies="Movies" OnMovieSelected="HandleMovieSelected" />
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
+        @foreach (var movie in Movies)
+        {
+            <div class="col">
+                <MovieCard Movie="movie" OnClick="HandleMovieSelected" />
+            </div>
+        }
+    </div>
 }
 else
 {

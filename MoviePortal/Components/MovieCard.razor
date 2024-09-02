@@ -1,8 +1,13 @@
 ﻿@using MoviePortal.Models
 @using MoviePortal.Services
 
-<div class="card h-100" @onclick="@(() => OnClick.InvokeAsync(Movie))">
-    <img src="@($"https://image.tmdb.org/t/p/w500{Movie.PosterPath}")" class="card-img-top" alt="@Movie.Title">
+<div class="movie-card @(IsHovered ? "hovered" : "")" @onclick="@(() => OnClick.InvokeAsync(Movie))" @onmouseover="() => IsHovered = true" @onmouseout="() => IsHovered = false">
+    <div class="poster-container">
+        <img src="@($"https://image.tmdb.org/t/p/w500{Movie.PosterPath}")" class="card-img-top" alt="@Movie.Title">
+        <div class="overlay">
+            <span class="view-details">View Details</span>
+        </div>
+    </div>
     <div class="card-body">
         <h5 class="card-title">@Movie.Title</h5>
         <p class="card-text">@string.Join(", ", Movie.GenreIds.Select(id => GenreService.GetGenreName(id)))</p>
@@ -13,4 +18,6 @@
     [Parameter] public Movie Movie { get; set; } = new();
     [Parameter] public EventCallback<Movie> OnClick { get; set; }
     [Inject] public GenreService GenreService { get; set; } = default!;
+
+    private bool IsHovered { get; set; } = false;
 }
