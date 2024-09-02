@@ -1,0 +1,38 @@
+﻿@using MoviePortal.Models
+@using MoviePortal.Services
+@inject NavigationManager NavigationManager
+
+@if (Movie != null)
+{
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@($"https://image.tmdb.org/t/p/w500{Movie.PosterPath}")" class="img-fluid" alt="@Movie.Title">
+            </div>
+            <div class="col-md-8">
+                <h2>@Movie.Title</h2>
+                <p><strong>Release Date:</strong> @Movie.ReleaseDate</p>
+                <p><strong>Genres:</strong> @string.Join(", ", Movie.GenreIds.Select(id => GenreService.GetGenreName(id)))</p>
+                <p>@Movie.Overview</p>
+                <h3>Cast</h3>
+                <ul>
+                    @foreach (var actor in Movie.Credits.Cast.Take(5))
+                    {
+                        <li>@actor.Name as @actor.Character</li>
+                    }
+                </ul>
+                <button class="btn btn-primary" @onclick="GoBack">Back to List</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Models.MovieDetails? Movie { get; set; }
+    [Inject] public GenreService GenreService { get; set; } = default!;
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

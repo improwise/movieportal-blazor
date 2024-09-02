@@ -1,0 +1,60 @@
+﻿@page "/"
+@using MoviePortal.Models
+@using MoviePortal.Services
+@inject TmdbApiService TmdbApiService
+@inject NavigationManager NavigationManager
+
+<h1>Movie Portal</h1>
+
+<SearchBar OnSearch="HandleSearch" />
+
+@if (IsLoading)
+{
+    <p>Loading...</p>
+}
+else if (Movies.Any())
+{
+    <MovieList Movies="Movies" OnMovieSelected="HandleMovieSelected" />
+}
+else
+{
+    <p>No movies found.</p>
+}
+
+@code {
+    private List<Movie> Movies = new();
+    private bool IsLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPopularMovies();
+    }
+
+    private async Task LoadPopularMovies()
+    {
+        IsLoading = true;
+        var response = await TmdbApiService.GetPopularMoviesAsync();
+        Movies = response.Results;
+        IsLoading = false;
+    }
+
+    private async Task HandleSearch(string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            await LoadPopularMovies();
+        }
+        else
+        {
+            IsLoading = true;
+            var response = await TmdbApiService.SearchMoviesAsync(searchTerm);
+            Movies = response.Results;
+            IsLoading = false;
+        }
+    }
+
+    private void HandleMovieSelected(Movie movie)
+    {
+        NavigationManager.NavigateTo($"/movie/{movie.Id}");
+    }
+}

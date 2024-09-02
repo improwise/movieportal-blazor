@@ -1,0 +1,23 @@
+﻿<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Search for movies..." @bind-value="@SearchTerm" @bind-value:event="oninput" @onkeyup="HandleKeyUp">
+    <button class="btn btn-primary" type="button" @onclick="Search">Search</button>
+</div>
+
+@code {
+    private string SearchTerm = string.Empty;
+
+    [Parameter] public EventCallback<string> OnSearch { get; set; }
+
+    private async Task Search()
+    {
+        await OnSearch.InvokeAsync(SearchTerm);
+    }
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await Search();
+        }
+    }
+}

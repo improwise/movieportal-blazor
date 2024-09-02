@@ -1,0 +1,15 @@
+﻿@using MoviePortal.Models
+
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var movie in Movies)
+    {
+        <div class="col">
+            <MovieCard Movie="movie" OnClick="OnMovieSelected" />
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<Movie> Movies { get; set; } = new();
+    [Parameter] public EventCallback<Movie> OnMovieSelected { get; set; }
+}

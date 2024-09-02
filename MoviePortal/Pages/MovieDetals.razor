@@ -1,0 +1,30 @@
+﻿@page "/movie/{MovieId:int}"
+@using MoviePortal.Models
+@using MoviePortal.Services
+@inject TmdbApiService TmdbApiService
+
+@if (Movie != null)
+{
+    <MovieDetails Movie="Movie" />
+}
+else if (IsLoading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <p>Movie not found.</p>
+}
+
+@code {
+    [Parameter] public int MovieId { get; set; }
+    private Models.MovieDetails? Movie;
+    private bool IsLoading = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        IsLoading = true;
+        Movie = await TmdbApiService.GetMovieDetailsAsync(MovieId);
+        IsLoading = false;
+    }
+}
