@@ -13,6 +13,11 @@ public class TmdbApiService
     {
         _httpClient = httpClient;
         _apiKey = configuration["TMDB_API_KEY"] ?? throw new InvalidOperationException("TMDB API key not found.");
+        if (string.IsNullOrWhiteSpace(_apiKey) || _apiKey == "TMDB_API_KEY_PLACEHOLDER")
+        {
+            throw new InvalidOperationException("TMDB API key is not set correctly.");
+        }
+
         _httpClient.BaseAddress = new Uri("https://api.themoviedb.org/3/");
     }
 

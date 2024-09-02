@@ -11,8 +11,11 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<TmdbApiService>();
 builder.Services.AddScoped<GenreService>();
 
-// Add TMDB API key from environment variable
-var tmdbApiKey = builder.Configuration["TMDB_API_KEY"] ?? Environment.GetEnvironmentVariable("TMDB_API_KEY");
-builder.Configuration["TMDB_API_KEY"] = tmdbApiKey;
+// Load configuration
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+if (builder.HostEnvironment.IsDevelopment())
+{
+    builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+}
 
 await builder.Build().RunAsync();
