@@ -2,15 +2,22 @@
 @implements IDisposable
 
 <div class="search-container">
-    <input type="text" class="search-input" placeholder="Search for movies..."
-           @bind-value="SearchTerm"
-           @bind-value:event="oninput"
-           @onkeyup="HandleKeyUp" />
+    <div class="search-input-wrapper">
+        <input type="text" class="search-input" placeholder="Search for movies..."
+               @bind-value="SearchTerm"
+               @bind-value:event="oninput"
+               @onkeyup="HandleKeyUp" />
+        @if (IsSearching)
+        {
+            <div class="search-spinner"></div>
+        }
+    </div>
 </div>
 
 @code {
     private string SearchTerm = string.Empty;
     private Timer? debounceTimer;
+    private bool IsSearching = false;
 
     [Parameter] public EventCallback<string> OnSearch { get; set; }
 
@@ -20,6 +27,7 @@
         debounceTimer = new Timer(500);
         debounceTimer.Elapsed += DebounceTimerElapsed;
         debounceTimer.Start();
+        IsSearching = true;
     }
 
     private void DebounceTimerElapsed(object? sender, ElapsedEventArgs e)
@@ -29,6 +37,7 @@
         InvokeAsync(async () =>
         {
             await OnSearch.InvokeAsync(SearchTerm);
+            IsSearching = false;
             StateHasChanged();
         });
     }
