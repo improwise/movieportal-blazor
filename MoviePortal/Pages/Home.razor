@@ -4,17 +4,19 @@
 @inject TmdbApiService TmdbApiService
 @inject NavigationManager NavigationManager
 
-<h1 class="mb-4">Movie Portal</h1>
+<h1 class="page-title">Movie Portal</h1>
 
 <SearchBar OnSearch="HandleSearch" />
 
 @if (IsLoading)
 {
-    <p>Loading...</p>
+    <div class="loading-indicator">
+        <p>Loading...</p>
+    </div>
 }
 else if (Movies.Any())
 {
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         @foreach (var movie in Movies)
         {
             <div class="col">
@@ -25,7 +27,9 @@ else if (Movies.Any())
 }
 else
 {
-    <p>No movies found.</p>
+    <div class="no-results">
+        <p>No movies found.</p>
+    </div>
 }
 
 @code {

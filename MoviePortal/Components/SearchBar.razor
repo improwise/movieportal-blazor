@@ -1,23 +1,40 @@
-﻿<div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Search for movies..." @bind-value="@SearchTerm" @bind-value:event="oninput" @onkeyup="HandleKeyUp">
-    <button class="btn btn-primary" type="button" @onclick="Search">Search</button>
+﻿@using System.Timers
+@implements IDisposable
+
+<div class="search-container">
+    <input type="text" class="search-input" placeholder="Search for movies..."
+           @bind-value="SearchTerm"
+           @bind-value:event="oninput"
+           @onkeyup="HandleKeyUp" />
 </div>
 
 @code {
     private string SearchTerm = string.Empty;
+    private Timer? debounceTimer;
 
     [Parameter] public EventCallback<string> OnSearch { get; set; }
 
-    private async Task Search()
+    private void HandleKeyUp(KeyboardEventArgs e)
     {
-        await OnSearch.InvokeAsync(SearchTerm);
+        debounceTimer?.Dispose();
+        debounceTimer = new Timer(500);
+        debounceTimer.Elapsed += DebounceTimerElapsed;
+        debounceTimer.Start();
     }
 
-    private async Task HandleKeyUp(KeyboardEventArgs e)
+    private void DebounceTimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        if (e.Key == "Enter")
+        debounceTimer?.Dispose();
+        debounceTimer = null;
+        InvokeAsync(async () =>
         {
-            await Search();
-        }
+            await OnSearch.InvokeAsync(SearchTerm);
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        debounceTimer?.Dispose();
     }
 }
