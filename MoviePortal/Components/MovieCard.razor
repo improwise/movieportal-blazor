@@ -1,7 +1,4 @@
-﻿@using MoviePortal.Models
-@using MoviePortal.Services
-
-<div class="movie-card @(IsHovered ? "hovered" : "")" @onclick="@(() => OnClick.InvokeAsync(Movie))" @onmouseover="() => IsHovered = true" @onmouseout="() => IsHovered = false">
+﻿<div class="movie-card @(IsHovered ? "hovered" : "")" @onclick="@(() => OnClick.InvokeAsync(Movie))" @onmouseover="() => IsHovered = true" @onmouseout="() => IsHovered = false">
     <div class="poster-container">
         <img src="@($"https://image.tmdb.org/t/p/w500{Movie.PosterPath}")" class="card-img-top" alt="@Movie.Title">
         <div class="overlay">
